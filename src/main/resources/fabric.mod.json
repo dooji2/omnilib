@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "omnilib",
+	"version": "${version}",
+	"name": "Omnilib",
+	"description": "Omnilib is a framework for exploring new possibilities in Minecraft modding.",
+	"authors": [
+		"Dooji"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/omnilib",
+		"sources": "https://github.com/dooji2/omnilib"
+	},
+	"license": "GPL-v3",
+	"icon": "assets/omnilib/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.dooji.omnilib.Omnilib"
+		],
+		"client": [
+			"com.dooji.omnilib.OmnilibClient"
+		]
+	},
+	"mixins": [
+		"omnilib.mixins.json",
+		{
+			"config": "omnilib.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
