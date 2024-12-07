@@ -6,9 +6,6 @@
         Built for Fabric 1.21 and 1.21.1.
     </p>
     <p>
-        <a href="https://github.com/dooji2/Omnilib/releases">
-            <img src="https://img.shields.io/github/downloads/dooji2/omnilib/total?color=white&style=for-the-badge" alt="GitHub Downloads" />
-        </a>
         <a href="https://github.com/dooji2/Omnilib">
             <img src="https://img.shields.io/github/languages/top/dooji2/omnilib?color=4B8BBE&style=for-the-badge" alt="Top Language" />
         </a>
