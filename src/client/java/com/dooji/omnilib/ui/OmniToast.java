@@ -1,8 +1,6 @@
 package com.dooji.omnilib.ui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
@@ -10,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-@Environment(EnvType.CLIENT)
 public class OmniToast implements Toast {
 
     private static final Identifier DEFAULT_BACKGROUND_TEXTURE = Identifier.of("omnilib", "textures/gui/toast.png");
