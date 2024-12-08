@@ -1,8 +1,8 @@
 <div align="center">
-    <img src="https://cdn.modrinth.com/data/cached_images/42f674ee76d1a9ead331f83c808276cbe0ce2371_0.webp" alt="Omnilib Logo" width="256" />
+    <img src="https://cdn.modrinth.com/data/cached_images/b08fa4e4d37aabd43ecdb0e91d871cd9e7488eeb_0.webp" alt="Omnilib Logo" width="256" />
     <h1>Omnilib</h1>
     <p>
-        A framework for exploring new possibilities in Minecraft modding<br>
+        A framework for enhanced UI elements and customization<br>
         Built for Fabric 1.20.1, 1.20.4, 1.21 and 1.21.1
     </p>
     <p> 
