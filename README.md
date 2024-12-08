@@ -44,7 +44,7 @@ OmnilibClient.showToast(
     5000, // Duration in milliseconds
     0xFFFFFF, // Title color (white)
     0xAAAAAA, // Description color (gray)
-    Identifier.of("omnilib", "textures/gui/toast_background.png"), // Background texture
+    null, // Custom background texture (optional)
     null, // Icon texture (optional)
     new ItemStack(Items.DIAMOND), // Icon item (optional)
     16, // Icon size
@@ -66,7 +66,7 @@ OmnilibClient.showTooltip(
         Text.literal("It supports multiple lines and icons.")
     ),
     0x800000FF, // Background color (ARGB)
-    Identifier.of("omnilib", "textures/gui/tooltip_background.png"), // Custom background texture (optional)
+    null, // Custom background texture (optional)
     0xFFFFFF, // Text color (white)
     null, // Custom icon texture (optional)
     mouseX + 10, // X position
