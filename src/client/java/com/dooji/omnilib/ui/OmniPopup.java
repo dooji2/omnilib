@@ -317,7 +317,8 @@ public class OmniPopup {
                         if (segment.trim().equals(displayText)) {
                             Style linkStyle = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
         
-                            if (client.currentScreen instanceof Screen screen) {
+                            if (client.currentScreen instanceof Screen) {
+                                Screen screen = (Screen) client.currentScreen;
                                 if (screen.handleTextClick(linkStyle)) {
                                     return true;
                                 }
