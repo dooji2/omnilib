@@ -5,6 +5,11 @@
         A framework for exploring new possibilities in Minecraft modding<br>
         Built for Fabric 1.20.1, 1.20.4, 1.21 and 1.21.1
     </p>
+    <p> 
+        <strong> 
+            For players: <a href="#requirements-and-compatibility">Check Requirements and Compatibility</a> 
+        </strong> 
+    </p>
     <p>
         <a href="https://github.com/dooji2/Omnilib">
             <img src="https://img.shields.io/github/languages/top/dooji2/omnilib?color=4B8BBE&style=for-the-badge" alt="Top Language" />
@@ -106,6 +111,10 @@ For detailed method descriptions and parameter explanations, refer to the **sour
 1. Download the mod JAR from the [Releases](https://github.com/dooji2/Omnilib/releases) page.
 2. Place the JAR file in your Minecraft `mods` folder.
 3. Launch Minecraft with Fabric 1.21 or 1.21.1 installed (**Fabric API is required!**).
+
+### Requirements and Compatibility
+- **Omnilib Dependency**: If a mod requires Omnilib, make sure to download the correct version and place it in your `mods` folder.
+- **Compatibility**: If you are on Fabric, **Fabric API** is required. If you are on (Neo)Forge, **Sinytra Connector** and **Forgified Fabric API** are required.
 
 ### Build From Source
 1. Clone the repository: `git clone https://github.com/dooji2/Omnilib.git`
