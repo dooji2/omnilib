@@ -11,9 +11,6 @@
         </strong> 
     </p>
     <p>
-        <a href="https://github.com/dooji2/Omnilib">
-            <img src="https://img.shields.io/github/languages/top/dooji2/omnilib?color=4B8BBE&style=for-the-badge" alt="Top Language" />
-        </a>
         <a href="https://discord.gg/UPmnyM9YcY">
             <img src="https://img.shields.io/discord/1153370502539255808?color=5865F2&label=Discord&logo=discord&style=for-the-badge" alt="Join Discord" />
         </a>
