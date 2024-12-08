@@ -110,7 +110,7 @@ For detailed method descriptions and parameter explanations, refer to the **sour
 ### Installation
 1. Download the mod JAR from the [Releases](https://github.com/dooji2/Omnilib/releases) page.
 2. Place the JAR file in your Minecraft `mods` folder.
-3. Launch Minecraft with Fabric 1.21 or 1.21.1 installed (**Fabric API is required!**).
+3. Launch Minecraft with Fabric 1.20.1, 1.20.4, 1.21 or 1.21.1 installed (**Fabric API is required!**).
 
 ### Requirements and Compatibility
 - **Omnilib Dependency**: If a mod requires Omnilib, make sure to download the correct version and place it in your `mods` folder.
