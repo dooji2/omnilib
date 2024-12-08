@@ -1,9 +1,9 @@
 <div align="center">
-    <img src="./src/main/resources/assets/omnilib/icon.png" alt="Omnilib Logo" width="256" />
+    <img src="https://cdn.modrinth.com/data/cached_images/42f674ee76d1a9ead331f83c808276cbe0ce2371_0.webp" alt="Omnilib Logo" width="256" />
     <h1>Omnilib</h1>
     <p>
-        A framework for exploring new possibilities in Minecraft modding.<br>
-        Built for Fabric 1.21 and 1.21.1.
+        A framework for exploring new possibilities in Minecraft modding<br>
+        Built for Fabric 1.20.1, 1.20.4, 1.21 and 1.21.1
     </p>
     <p>
         <a href="https://github.com/dooji2/Omnilib">
@@ -17,6 +17,9 @@
         </a>
         <a href="https://github.com/dooji2/Omnilib/issues">
             <img src="https://img.shields.io/github/issues/dooji2/omnilib?color=yellow&style=for-the-badge" alt="GitHub Issues" />
+        </a>
+        <a href="https://jitpack.io/#dooji2/omnilib/">
+            <img src="https://img.shields.io/jitpack/v/github/dooji2/omnilib?style=for-the-badge" alt="JitPack Version" />
         </a>
     </p>
 </div>
@@ -83,10 +86,7 @@ OmniText styledTextWithIcon = OmnilibClient.createOmniText(
 ```
 
 ### OmniPopup
-OmniPopup is a dynamic UI component for displaying a scrollable list of selectable options.
-
-> [!NOTE]
-> OmniPopup is a more extensive feature and will be fully documented in a future update, following the first release of **Omnilib**. Stay tuned for detailed usage guides and examples!
+OmniPopup is a dynamic UI component for displaying a scrollable list of selectable options. This is a more extensive feature and will be fully documented in a future update, following the first release of **Omnilib**. Stay tuned for detailed usage guides and examples!
 
 ## Developer Documentation
 The core class `OmnilibClient` includes **Javadoc-style documentation** for all major methods and features, such as:
@@ -100,7 +100,7 @@ For detailed method descriptions and parameter explanations, refer to the **sour
 ## Getting Started
 
 ### Installation
-1. Download the mod JAR from the [Releases](https://github.com/dooji2/Omnilib/releases) page.
+1. Download the mod JAR from this page.
 2. Place the JAR file in your Minecraft `mods` folder.
 3. Launch Minecraft with Fabric 1.21 or 1.21.1 installed (**Fabric API is required!**).
 
@@ -120,7 +120,7 @@ For help or feedback, join the community on Discord
 
 ## Credits
 
-- [Dooji](https://github.com/dooji2) - The (only) developer
+- Dooji - The (only) developer
 - Fabric – The modding platform that makes this possible
 
 <p align="center">
