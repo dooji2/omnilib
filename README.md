@@ -1,9 +1,9 @@
 <div align="center">
-    <img src="./src/main/resources/assets/omnilib/icon.png" alt="Omnilib Logo" width="256" />
+    <img src="https://cdn.modrinth.com/data/cached_images/42f674ee76d1a9ead331f83c808276cbe0ce2371_0.webp" alt="Omnilib Logo" width="256" />
     <h1>Omnilib</h1>
     <p>
-        A framework for exploring new possibilities in Minecraft modding.<br>
-        Built for Fabric 1.21 and 1.21.1.
+        A framework for exploring new possibilities in Minecraft modding<br>
+        Built for Fabric 1.20.1, 1.20.4, 1.21 and 1.21.1
     </p>
     <p>
         <a href="https://github.com/dooji2/Omnilib">
@@ -17,6 +17,9 @@
         </a>
         <a href="https://github.com/dooji2/Omnilib/issues">
             <img src="https://img.shields.io/github/issues/dooji2/omnilib?color=yellow&style=for-the-badge" alt="GitHub Issues" />
+        </a>
+        <a href="https://jitpack.io/#dooji2/omnilib/">
+            <img src="https://img.shields.io/jitpack/v/github/dooji2/omnilib?style=for-the-badge" alt="JitPack Version" />
         </a>
     </p>
 </div>
