@@ -33,7 +33,7 @@ If a mod requires Omnilib, follow these steps to install it:
 
 ## Support
 
-For help or feedback, join the community on Discord
+For help or feedback, join the community on Discord.
 
 <a href="https://discord.gg/UPmnyM9YcY">
     <img src="https://img.shields.io/discord/1153370502539255808?color=5865F2&label=Discord&logo=discord&style=for-the-badge" alt="Join Discord" />
@@ -42,13 +42,3 @@ For help or feedback, join the community on Discord
 ## For Developers
 
 If you are a developer looking to use Omnilib in your mod, check out the [wiki](https://github.com/dooji2/omnilib/wiki).
-
-## Credits
-
-- [Dooji](https://github.com/dooji2) - The (only) developer
-- Fabric – The modding platform that makes this possible
-
-<p align="center">
-    Let’s explore the future of Minecraft modding with <strong>Omnilib</strong>!<br>
-    <em>> there's actually nothing futuristic or revolutionary about this but it just fits into the theme <</em>
-</p>
