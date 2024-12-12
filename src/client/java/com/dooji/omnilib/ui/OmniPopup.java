@@ -101,6 +101,10 @@ public class OmniPopup {
 
     public void render(DrawContext context, int x, int y, int mouseX, int mouseY) {
         if (suggestions.isEmpty()) return;
+
+        context.getMatrices().push();
+        context.getMatrices().translate(0, 0, 1);
+
         offset = MathHelper.clamp(offset, 0, Math.max(0, suggestions.size() - maxVisibleSuggestions));
         int visibleCount = Math.min(suggestions.size(), maxVisibleSuggestions);
         int totalHeight = visibleCount * rowHeight;
@@ -145,6 +149,8 @@ public class OmniPopup {
             context.fill(scrollbarX, startY, scrollbarX + scrollbarWidth, startY + totalHeight, scrollbarBackground);
             context.fill(scrollbarX, scrollbarY, scrollbarX + scrollbarWidth, scrollbarY + scrollbarHeight, scrollbarForeground);
         }
+
+        context.getMatrices().pop();
     }
 
     private void renderBulletAndText(DrawContext context, TextRenderer textRenderer, OmniText omniText, int baseX, int y, int color, int index, int fontHeight) {
