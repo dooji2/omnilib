@@ -35,9 +35,18 @@ public class OmniToast implements Toast {
     private final int titleColor;
     private final int descriptionColor;
 
-    public OmniToast(Text title, Text description, long duration, int titleColor, int descriptionColor,
-                     Identifier backgroundTexture, Identifier iconTexture, ItemStack iconItemStack,
-                     int iconSize, int textureWidth, int textureHeight) {
+    public OmniToast(
+            Text title, 
+            Text description, 
+            long duration, 
+            int titleColor, 
+            int descriptionColor,
+            Identifier backgroundTexture, 
+            Identifier iconTexture, 
+            ItemStack iconItemStack,
+            int iconSize, 
+            int textureWidth, 
+            int textureHeight) {
         this.title = title;
         this.description = description;
         this.duration = duration;

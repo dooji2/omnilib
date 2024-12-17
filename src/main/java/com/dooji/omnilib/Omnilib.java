@@ -18,11 +18,11 @@ public class Omnilib implements ModInitializer {
 
 	private String getWelcomeMessage() {
 		String[] messages = {
-				"[OmniLib] The future is now.",
-				"[OmniLib] A new frontier begins.",
-				"[OmniLib] Welcome to the next level.",
-				"[OmniLib] Where possibilities take shape.",
-				"[OmniLib] Let’s craft something amazing."
+				"The future is now.",
+				"A new frontier begins.",
+				"Welcome to the next level.",
+				"Where possibilities take shape.",
+				"Let’s craft something amazing."
 		};
 		Random random = new Random();
 		return messages[random.nextInt(messages.length)];
