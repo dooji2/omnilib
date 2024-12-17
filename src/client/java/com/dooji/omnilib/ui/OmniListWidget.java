@@ -178,17 +178,27 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
             }            
         
             int buttonX = x + entryWidth - buttonWidth;
-            int buttonHeight = entryHeight / 2;
-        
-            for (int i = 0; i < buttons.size(); i++) {
-                OmniButton button = buttons.get(i);
-                int buttonY = y + (i * buttonHeight);
+
+            if (buttons.size() == 1) {
+                OmniButton button = buttons.get(0);
                 button.setX(buttonX);
-                button.setY(buttonY);
+                button.setY(y);
                 button.setWidth(buttonWidth);
-                button.setHeight(buttonHeight);
+                button.setHeight(entryHeight);
                 button.render(context, mouseX, mouseY, delta);
-            }
+            } else {
+                int buttonHeight = entryHeight / buttons.size();
+            
+                for (int i = 0; i < buttons.size(); i++) {
+                    OmniButton button = buttons.get(i);
+                    int buttonY = y + (i * buttonHeight);
+                    button.setX(buttonX);
+                    button.setY(buttonY);
+                    button.setWidth(buttonWidth);
+                    button.setHeight(buttonHeight);
+                    button.render(context, mouseX, mouseY, delta);
+                }
+            }            
         }        
 
         private List<String> wrapText(MinecraftClient client, String text, int maxWidth, int maxHeight, boolean hasButtons, int margin) {
