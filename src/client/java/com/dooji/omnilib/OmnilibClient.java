@@ -11,6 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class OmnilibClient implements ClientModInitializer {
 
@@ -112,7 +113,6 @@ public class OmnilibClient implements ClientModInitializer {
 	/**
 	 * Creates an OmniText from a plain string.
 	 * The returned OmniText object wraps the given string, enabling support for Markdown rendering.
-	 * This method also does not include any texture or icon.
 	 *
 	 * @param content The content of the text, including Markdown syntax (e.g., `**bold**`, `_italic_`).
 	 * @return An OmniText object representing the given content.
@@ -124,7 +124,6 @@ public class OmnilibClient implements ClientModInitializer {
 	/**
 	 * Creates an OmniText from an existing Text object.
 	 * The returned OmniText object wraps the given Text, enabling support for Markdown rendering.
-	 * This method does not include any texture or icon.
 	 *
 	 * @param text The existing Text object to wrap.
 	 * @return An OmniText object wrapping the given Text.
@@ -134,10 +133,9 @@ public class OmnilibClient implements ClientModInitializer {
 	}
 
 	/**
-	 * Creates an OmniText from a plain string with an optional texture icon.
-	 * The returned OmniText object wraps the given string, enabling support for Markdown rendering.
-	 * Additionally, it allows the inclusion of an icon at the beginning of the text.
-	 * This method is useful for showing icons along with the text, such as in a list with custom icons.
+	 * Creates an OmniText object from a plain string with optional texture data.
+	 * The returned OmniText object wraps the given string and allows for storing associated texture data.
+	 * This texture data can be accessed later for rendering purposes, such as in components like OmniPopup.
 	 *
 	 * @param content       The content of the text, including Markdown syntax (e.g., `**bold**`, `_italic_`).
 	 * @param textureIdentifier  An {@link Identifier} pointing to the texture to display at the beginning of the text. Can be null if no icon is needed.
@@ -147,5 +145,226 @@ public class OmnilibClient implements ClientModInitializer {
 	 */
 	public static OmniText createOmniText(String content, Identifier textureIdentifier, int textureWidth, int textureHeight) {
 		return OmniText.of(content, textureIdentifier, textureWidth, textureHeight);
-	}	
+	}
+
+	/**
+	 * Creates a customizable OmniField widget.
+	 *
+	 * @param textRenderer     The text renderer to use.
+	 * @param x                X-coordinate of the field.
+	 * @param y                Y-coordinate of the field.
+	 * @param width            Width of the field.
+	 * @param height           Height of the field.
+	 * @param message          Placeholder text for the field.
+	 * @param searchQuery      The text value for the field.
+	 * @param changedListener  Listener for text change events.
+	 * @param maxLength        Maximum length of characters. Null for default (100).
+	 * @param cursorColor      Color of the cursor. Null for default (white).
+	 * @param backgroundColor  Background color of the field. Null for default.
+	 * @param hoveredColor     Hovered background color. Null for default.
+	 * @param cursorTexture    Custom cursor texture. Null for default.
+	 * @param backgroundTexture Custom background texture. Null for default.
+	 * @param hoveredTexture   Custom hovered background texture. Null for default.
+	 * @return A new OmniField instance.
+	 */
+	public static OmniField createOmniField(
+			TextRenderer textRenderer,
+			int x,
+			int y,
+			int width,
+			int height,
+			Text message,
+			String searchQuery,
+			Consumer<String> changedListener,
+			Integer maxLength,
+			Integer cursorColor,
+			Integer backgroundColor,
+			Integer hoveredColor,
+			Identifier cursorTexture,
+			Identifier backgroundTexture,
+			Identifier hoveredTexture) {
+		OmniField field = new OmniField(textRenderer, x, y, width, height, message, maxLength, cursorColor, backgroundColor, hoveredColor, cursorTexture, backgroundTexture, hoveredTexture);
+		if (searchQuery != null) {
+			field.setText(searchQuery);
+		}
+		if (changedListener != null) {
+			field.setChangedListener(changedListener);
+		}
+		return field;
+	}
+
+	/**
+	 * Creates an OmniField widget.
+	 *
+	 * @param textRenderer    The text renderer to use.
+	 * @param x               X-coordinate of the field.
+	 * @param y               Y-coordinate of the field.
+	 * @param width           Width of the field.
+	 * @param height          Height of the field.
+	 * @param message         Placeholder text for the field.
+	 * @param searchQuery     The text value for the field.
+	 * @param changedListener Listener for text change events.
+	 * @return A new OmniField instance.
+	 */
+	public static OmniField createOmniField(
+			TextRenderer textRenderer,
+			int x,
+			int y,
+			int width,
+			int height,
+			Text message,
+			String searchQuery,
+			Consumer<String> changedListener) {
+		OmniField field = new OmniField(textRenderer, x, y, width, height, message);
+		if (searchQuery != null) {
+			field.setText(searchQuery);
+		}
+		if (changedListener != null) {
+			field.setChangedListener(changedListener);
+		}
+		return field;
+	}
+
+	/**
+	 * Creates a text-only OmniButton widget.
+	 *
+	 * @param x               X-coordinate of the button.
+	 * @param y               Y-coordinate of the button.
+	 * @param width           Width of the button.
+	 * @param height          Height of the button.
+	 * @param message         Text to display.
+	 * @param color           Background color of the button.
+	 * @param hoverColor      Hover background color.
+	 * @param textColor       Text color.
+	 * @param textHoverColor  Hover text color.
+	 * @param onPress         Action on button press.
+	 * @return A new OmniButton instance.
+	 */
+	public static OmniButton createOmniButton(
+			int x,
+			int y,
+			int width,
+			int height,
+			Text message,
+			int color,
+			int hoverColor,
+			int textColor,
+			int textHoverColor,
+			Runnable onPress) {
+		return new OmniButton(x, y, width, height, message, color, hoverColor, textColor, textHoverColor, onPress);
+	}
+
+	/**
+	 * Creates an image-only OmniButton widget.
+	 *
+	 * @param x           X-coordinate of the button.
+	 * @param y           Y-coordinate of the button.
+	 * @param width       Width of the button.
+	 * @param height      Height of the button.
+	 * @param texture     Identifier for the button's texture.
+	 * @param color       Background color of the button.
+	 * @param hoverColor  Hover background color.
+	 * @param onPress     Action on button press.
+	 * @return A new OmniButton instance.
+	 */
+	public static OmniButton createOmniButton(
+			int x,
+			int y,
+			int width,
+			int height,
+			Identifier texture,
+			int color,
+			int hoverColor,
+			Runnable onPress) {
+		return new OmniButton(x, y, width, height, texture, color, hoverColor, onPress);
+	}
+
+	/**
+	 * Creates an image-only OmniButton widget with hover texture.
+	 *
+	 * @param x             X-coordinate of the button.
+	 * @param y             Y-coordinate of the button.
+	 * @param width         Width of the button.
+	 * @param height        Height of the button.
+	 * @param texture       Identifier for the button's default texture.
+	 * @param hoverTexture  Identifier for the button's hover texture.
+	 * @param color         Background color of the button.
+	 * @param hoverColor    Hover background color.
+	 * @param onPress       Action on button press.
+	 * @return A new OmniButton instance.
+	 */
+	public static OmniButton createOmniButton(
+			int x,
+			int y,
+			int width,
+			int height,
+			Identifier texture,
+			Identifier hoverTexture,
+			int color,
+			int hoverColor,
+			Runnable onPress) {
+		return new OmniButton(x, y, width, height, texture, hoverTexture, color, hoverColor, onPress);
+	}
+
+	/**
+	 * Creates an OmniListWidget.
+	 *
+	 * @param client                  The Minecraft client instance.
+	 * @param listWidth               Width of the list widget.
+	 * @param listHeight              Height of the list widget.
+	 * @param top                     Top position of the list.
+	 * @param bottom                  Bottom position of the list.
+	 * @param itemWidth               Width of each entry.
+	 * @param itemHeight              Height of each entry.
+	 * @param buttonWidth 			  The width of the buttons displayed in each list entry.
+	 * @param spacing                 Spacing between entries.
+	 * @param backgroundTexture       Background texture for entries.
+	 * @param hoverBackgroundTexture  Hover texture for entries.
+	 * @param backgroundColor         Background color for entries.
+	 * @param hoverBackgroundColor    Hover color for entries.
+	 * @param scrollbarBackgroundColor Color for scrollbar background.
+	 * @param scrollbarColor          Color for scrollbar handle.
+	 * @param scrollbarHoverColor     Hover color for scrollbar handle.
+	 * @param clickCallback           Callback triggered when an entry is clicked, providing the entry's index as an int.
+	 * @return An OmniListWidget instance.
+	 */
+	public static OmniListWidget createOmniListWidget(
+			MinecraftClient client,
+			int listWidth,
+			int listHeight,
+			int top,
+			int bottom,
+			int itemWidth,
+			int itemHeight,
+			int buttonWidth,
+			int spacing,
+			Identifier backgroundTexture,
+			Identifier hoverBackgroundTexture,
+			int backgroundColor,
+			int hoverBackgroundColor,
+			int scrollbarBackgroundColor,
+			int scrollbarColor,
+			int scrollbarHoverColor,
+			Consumer<Integer> clickCallback
+	) {
+		return new OmniListWidget(
+				client,
+				listWidth,
+				listHeight,
+				top,
+				bottom,
+				itemWidth,
+				itemHeight,
+				buttonWidth,
+				spacing,
+				backgroundTexture,
+				hoverBackgroundTexture,
+				backgroundColor,
+				hoverBackgroundColor,
+				scrollbarBackgroundColor,
+				scrollbarColor,
+				scrollbarHoverColor,
+				clickCallback
+		);
+	}
 }
