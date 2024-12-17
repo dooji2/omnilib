@@ -257,57 +257,63 @@ public class OmniField extends ClickableWidget {
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         Identifier currentBackground = isHovered() && hoveredTexture != null ? hoveredTexture : backgroundTexture;
-
+    
         if (currentBackground != null) {
             context.drawTexture(currentBackground, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
         } else {
             int bgColor = isHovered() ? hoveredColor : backgroundColor;
             context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, bgColor);
         }
-
-        String visibleText = this.textRenderer.trimToWidth(this.text.substring(scrollOffset), this.width - 4);
-        int textX = this.getX() + 2;
+    
+        String visibleText = this.textRenderer.trimToWidth(this.text.substring(scrollOffset), this.width - 8);
+        int textX = this.getX() + 4;
         int textY = this.getY() + (this.height - this.textRenderer.fontHeight) / 2;
-
-        if (selectionStart != -1 && selectionStart != cursorPosition) {
-            int start = Math.min(selectionStart, cursorPosition);
-            int end = Math.max(selectionStart, cursorPosition);
-
-            start = Math.max(start, scrollOffset);
-            end = Math.min(end, this.text.length());
-
-            if (start < end) {
-                int selectionStartX = textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, start));
-                int selectionEndX = textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, end));
-
-                selectionStartX = Math.max(selectionStartX, textX);
-                selectionEndX = Math.min(selectionEndX, textX + this.width - 4);
-
-                if (selectionStartX < selectionEndX) {
-                    context.fill(selectionStartX, textY, selectionEndX, textY + this.textRenderer.fontHeight, 0x80FFFFFF);
+    
+        if (this.text.isEmpty() && !this.isFocused() && this.getMessage() != null) {
+            Text placeholder = this.getMessage().copy().styled(style -> style.withItalic(true));
+            context.drawText(this.textRenderer, placeholder, textX, textY, 0x808080, false);
+        } else {
+            if (selectionStart != -1 && selectionStart != cursorPosition) {
+                int start = Math.min(selectionStart, cursorPosition);
+                int end = Math.max(selectionStart, cursorPosition);
+    
+                start = Math.max(start, scrollOffset);
+                end = Math.min(end, this.text.length());
+    
+                if (start < end) {
+                    int selectionStartX = textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, start));
+                    int selectionEndX = textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, end));
+    
+                    selectionStartX = Math.max(selectionStartX, textX);
+                    selectionEndX = Math.min(selectionEndX, textX + this.width - 4);
+    
+                    if (selectionStartX < selectionEndX) {
+                        context.fill(selectionStartX, textY, selectionEndX, textY + this.textRenderer.fontHeight, 0x80FFFFFF);
+                    }
                 }
             }
+    
+            context.drawText(this.textRenderer, visibleText, textX, textY, 0xFFFFFF, false);
         }
-
-        context.drawText(this.textRenderer, visibleText, textX, textY, 0xFFFFFF, false);
-
+    
         if (this.isFocused()) {
             long time = System.currentTimeMillis();
             if (time - lastBlinkTime > 500) {
                 cursorVisible = !cursorVisible;
                 lastBlinkTime = time;
             }
-
+    
             if (cursorVisible) {
+                int cursorX = Math.min(textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, cursorPosition)), this.getX() + this.width - 4);
+
                 if (cursorTexture != null) {
-                    context.drawTexture(cursorTexture, textX + this.textRenderer.getWidth(visibleText), textY, 0, 0, 1, this.textRenderer.fontHeight, 1, this.textRenderer.fontHeight);
+                    context.drawTexture(cursorTexture, cursorX, textY, 0, 0, 1, this.textRenderer.fontHeight, 1, this.textRenderer.fontHeight);
                 } else {
-                    int cursorPixelPos = textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, cursorPosition));
-                    context.fill(cursorPixelPos, textY, cursorPixelPos + 1, textY + this.textRenderer.fontHeight, cursorColor);
+                    context.fill(cursorX, textY, cursorX + 1, textY + this.textRenderer.fontHeight, cursorColor);
                 }
             }
         }
-    }
+    }    
 
     @Override
     public boolean isFocused() {

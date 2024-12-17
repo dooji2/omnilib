@@ -210,7 +210,7 @@ public class OmnilibClient implements ClientModInitializer {
 	 * @param width            Width of the field.
 	 * @param height           Height of the field.
 	 * @param message          Placeholder text for the field.
-	 * @param searchQuery      The text value for the field.
+	 * @param text             The text value for the field.
 	 * @param changedListener  Listener for text change events.
 	 * @param maxLength        Maximum length of characters. Null for default (100).
 	 * @param cursorColor      Color of the cursor. Null for default (white).
@@ -228,7 +228,7 @@ public class OmnilibClient implements ClientModInitializer {
 			int width,
 			int height,
 			Text message,
-			String searchQuery,
+			String text,
 			Consumer<String> changedListener,
 			Integer maxLength,
 			Integer cursorColor,
@@ -238,8 +238,8 @@ public class OmnilibClient implements ClientModInitializer {
 			Identifier backgroundTexture,
 			Identifier hoveredTexture) {
 		OmniField field = new OmniField(textRenderer, x, y, width, height, message, maxLength, cursorColor, backgroundColor, hoveredColor, cursorTexture, backgroundTexture, hoveredTexture);
-		if (searchQuery != null) {
-			field.setText(searchQuery);
+		if (text != null) {
+			field.setText(text);
 		}
 		if (changedListener != null) {
 			field.setChangedListener(changedListener);
@@ -256,7 +256,7 @@ public class OmnilibClient implements ClientModInitializer {
 	 * @param width           Width of the field.
 	 * @param height          Height of the field.
 	 * @param message         Placeholder text for the field.
-	 * @param searchQuery     The text value for the field.
+	 * @param text            The text value for the field.
 	 * @param changedListener Listener for text change events.
 	 * @return A new OmniField instance.
 	 */
@@ -267,11 +267,11 @@ public class OmnilibClient implements ClientModInitializer {
 			int width,
 			int height,
 			Text message,
-			String searchQuery,
+			String text,
 			Consumer<String> changedListener) {
 		OmniField field = new OmniField(textRenderer, x, y, width, height, message);
-		if (searchQuery != null) {
-			field.setText(searchQuery);
+		if (text != null) {
+			field.setText(text);
 		}
 		if (changedListener != null) {
 			field.setChangedListener(changedListener);
