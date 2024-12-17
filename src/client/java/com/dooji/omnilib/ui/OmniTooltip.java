@@ -5,6 +5,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ColorHelper.Argb;
 
 import java.util.Collections;
@@ -20,6 +21,8 @@ public class OmniTooltip {
     private static final int DEFAULT_LINE_SPACING = 4;
     private static final int DEFAULT_BACKGROUND_COLOR = Argb.getArgb(150, 60, 60, 60);
     private static final int DEFAULT_TEXT_COLOR = 0xFFFFFF;
+    private static final int DEFAULT_MAX_HEIGHT = 140;
+    private static final double DEFAULT_SCROLL_SPEED = 25.0;
 
     private final int iconSize;
     private final int padding;
@@ -30,6 +33,8 @@ public class OmniTooltip {
     private final Identifier customIconTexture;
     private final int customIconWidth;
     private final int customIconHeight;
+    private final int maxHeight;
+    private final double scrollSpeed;
 
     public OmniTooltip(
             String categoryTitle,
@@ -43,7 +48,9 @@ public class OmniTooltip {
             int textColor,
             Identifier customIconTexture,
             int customIconWidth,
-            int customIconHeight) {
+            int customIconHeight,
+            Integer maxHeight,
+            Double scrollSpeed) {
         if (backgroundColor == 0 && backgroundTexture == null) {
             throw new IllegalArgumentException("Either backgroundColor or backgroundTexture must be specified.");
         }
@@ -59,16 +66,36 @@ public class OmniTooltip {
         this.customIconTexture = customIconTexture;
         this.customIconWidth = customIconWidth > 0 ? customIconWidth : iconSize;
         this.customIconHeight = customIconHeight > 0 ? customIconHeight : iconSize;
+        this.maxHeight = maxHeight != null && maxHeight > 0 ? maxHeight : DEFAULT_MAX_HEIGHT;
+        this.scrollSpeed = scrollSpeed != null && scrollSpeed > 0 ? scrollSpeed : DEFAULT_SCROLL_SPEED;
+    }
+
+    public OmniTooltip(
+            String categoryTitle,
+            List<ItemStack> itemStacks,
+            List<Text> textList,
+            int iconSize,
+            int padding,
+            int lineSpacing,
+            int backgroundColor,
+            Identifier backgroundTexture,
+            int textColor,
+            Identifier customIconTexture,
+            int customIconWidth,
+            int customIconHeight) {
+        this(categoryTitle, itemStacks, textList, iconSize, padding, lineSpacing, backgroundColor, backgroundTexture, textColor, customIconTexture, customIconWidth, customIconHeight, null, null);
     }
 
     public void render(DrawContext context, TextRenderer textRenderer, int x, int y) {
         int tooltipWidth = getTooltipWidth(textRenderer);
         int tooltipHeight = getTooltipHeight();
+        boolean requiresScrolling = tooltipHeight > maxHeight;
 
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, 1);
 
-        drawBackground(context, x, y, tooltipWidth, tooltipHeight);
+        int displayHeight = requiresScrolling ? maxHeight : tooltipHeight;
+        drawBackground(context, x, y, tooltipWidth, displayHeight);
 
         int yOffset = padding;
 
@@ -80,6 +107,47 @@ public class OmniTooltip {
                 textColor
         );
         yOffset += iconSize + lineSpacing;
+
+        if (requiresScrolling) {
+            renderScrollableContent(context, textRenderer, x, y + yOffset, tooltipWidth, displayHeight - yOffset);
+        } else {
+            renderContent(context, textRenderer, x, y + yOffset);
+        }
+
+        context.getMatrices().pop();
+    }
+
+    private void renderScrollableContent(DrawContext context, TextRenderer textRenderer, int x, int y, int width, int height) {
+        int contentHeight = getTooltipHeight() - padding;
+        if (contentHeight <= 0) return;
+    
+        double time = Util.getMeasuringTimeMs() / 1000.0;
+        double scrollAmount = (time * scrollSpeed) % (contentHeight + DEFAULT_LINE_SPACING);
+    
+        int yOffset = -((int) scrollAmount);
+    
+        context.enableScissor(x, y, x + width, y + height - padding);
+    
+        renderContent(context, textRenderer, x, y + yOffset);
+    
+        int dividerY = y + yOffset + contentHeight + (DEFAULT_LINE_SPACING / 2);
+        renderDivider(context, x, dividerY, width);
+    
+        renderContent(context, textRenderer, x, y + yOffset + contentHeight + DEFAULT_LINE_SPACING);
+    
+        context.disableScissor();
+    }    
+    
+    private void renderDivider(DrawContext context, int x, int y, int width) {
+        int lineWidth = (int) (width * 0.75);
+        int lineStartX = x + (width - lineWidth) / 2;
+        int adjustedY = y - (iconSize + lineSpacing * 4) / 2;
+    
+        context.fill(lineStartX, adjustedY, lineStartX + lineWidth, adjustedY + 1, 0xFFFFFFFF);
+    }      
+
+    private void renderContent(DrawContext context, TextRenderer textRenderer, int x, int y) {
+        int yOffset = 0;
 
         for (int i = 0; i < textList.size(); i++) {
             if (customIconTexture != null) {
@@ -99,8 +167,6 @@ public class OmniTooltip {
 
             yOffset += iconSize + lineSpacing;
         }
-
-        context.getMatrices().pop();
     }
 
     private int getTooltipWidth(TextRenderer textRenderer) {
