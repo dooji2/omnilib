@@ -186,7 +186,7 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
                 button.setWidth(buttonWidth);
                 button.setHeight(entryHeight);
                 button.render(context, mouseX, mouseY, delta);
-            } else {
+            } else if (!buttons.isEmpty()) {
                 int buttonHeight = entryHeight / buttons.size();
             
                 for (int i = 0; i < buttons.size(); i++) {
