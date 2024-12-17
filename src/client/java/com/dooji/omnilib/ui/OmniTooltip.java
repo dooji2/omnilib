@@ -126,7 +126,7 @@ public class OmniTooltip {
     
         int yOffset = -((int) scrollAmount);
     
-        context.enableScissor(x, y, x + width, y + height);
+        context.enableScissor(x, y, x + width, y + height - padding);
     
         renderContent(context, textRenderer, x, y + yOffset);
     
