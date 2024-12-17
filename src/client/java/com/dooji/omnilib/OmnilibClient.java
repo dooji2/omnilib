@@ -66,6 +66,8 @@ public class OmnilibClient implements ClientModInitializer {
 
 	/**
 	 * Displays an OmniTooltip with fully customizable options.
+	 * 
+	 * This version uses the default max height (140) and default scroll speed (25.0) when the content exceeds the max height.
 	 *
 	 * @param context           The draw context for rendering.
 	 * @param textRenderer      The text renderer for drawing text.
@@ -105,6 +107,58 @@ public class OmnilibClient implements ClientModInitializer {
 				customTexture,
 				16,
 				16
+		);
+
+		tooltip.render(context, textRenderer, x, y);
+	}
+
+	/**
+	 * Displays an OmniTooltip with fully customizable options.
+	 *
+	 * @param context           The draw context for rendering.
+	 * @param textRenderer      The text renderer for drawing text.
+	 * @param categoryTitle     Title of the tooltip category.
+	 * @param itemStacks        List of ItemStacks to display. Can be null or empty.
+	 * @param textList          List of text entries for the tooltip content.
+	 * @param backgroundColor   Background color of the tooltip in ARGB format. Ignored if `backgroundTexture` is provided.
+	 * @param backgroundTexture Identifier for a custom background texture. Can be null.
+	 * @param textColor         Text color in RGB format.
+	 * @param customTexture     Identifier for a custom icon texture. Can be null.
+	 * @param maxHeight         Maximum height of the tooltip before scrolling.
+	 * @param scrollSpeed       Scroll speed in pixels per second.
+	 * @param x                 X-coordinate for the tooltip.
+	 * @param y                 Y-coordinate for the tooltip.
+	 */
+	public static void showTooltip(
+			DrawContext context,
+			TextRenderer textRenderer,
+			String categoryTitle,
+			List<ItemStack> itemStacks,
+			List<Text> textList,
+			int backgroundColor,
+			Identifier backgroundTexture,
+			int textColor,
+			Identifier customTexture,
+			int maxHeight,
+			double scrollSpeed,
+			int x,
+			int y) {
+
+		OmniTooltip tooltip = new OmniTooltip(
+				categoryTitle,
+				itemStacks,
+				textList,
+				16,
+				8,
+				4,
+				backgroundColor,
+				backgroundTexture,
+				textColor,
+				customTexture,
+				16,
+				16,
+				maxHeight,
+				scrollSpeed
 		);
 
 		tooltip.render(context, textRenderer, x, y);
