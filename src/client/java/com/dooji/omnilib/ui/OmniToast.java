@@ -1,7 +1,9 @@
 package com.dooji.omnilib.ui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.item.ItemStack;
@@ -36,16 +38,16 @@ public class OmniToast implements Toast {
     private final int descriptionColor;
 
     public OmniToast(
-            Text title, 
-            Text description, 
-            long duration, 
-            int titleColor, 
+            Text title,
+            Text description,
+            long duration,
+            int titleColor,
             int descriptionColor,
-            Identifier backgroundTexture, 
-            Identifier iconTexture, 
+            Identifier backgroundTexture,
+            Identifier iconTexture,
             ItemStack iconItemStack,
-            int iconSize, 
-            int textureWidth, 
+            int iconSize,
+            int textureWidth,
             int textureHeight) {
         this.title = title;
         this.description = description;
@@ -82,21 +84,23 @@ public class OmniToast implements Toast {
     }
 
     @Override
-    public Visibility draw(DrawContext drawContext, ToastManager manager, long currentTime) {
-        updateWidth();
+    public Visibility getVisibility() {
+        return hidden ? Visibility.HIDE : Visibility.SHOW;
+    }
 
-        RenderSystem.setShaderTexture(0, backgroundTexture);
-        drawContext.drawTexture(backgroundTexture, 0, 0, 0, 0, getWidth(), getHeight(), textureWidth, textureHeight);
+    @Override
+    public void draw(DrawContext drawContext, TextRenderer textRenderer, long currentTime) {
+        updateWidth();
+        drawContext.drawTexture(RenderLayer::getGuiTextured, backgroundTexture, 0, 0, 0, 0, getWidth(), getHeight(), textureWidth, textureHeight);
 
         if (iconItemStack != null) {
             drawContext.drawItem(iconItemStack, 10, (textureHeight - iconSize) / 2);
         } else {
-            RenderSystem.setShaderTexture(0, iconTexture);
-            drawContext.drawTexture(iconTexture, 10, (textureHeight - iconSize) / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            drawContext.drawTexture(RenderLayer::getGuiTextured, iconTexture, 10, (textureHeight - iconSize) / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
-        drawContext.drawText(manager.getClient().textRenderer, this.title, 38, 7, this.titleColor, false);
-        drawContext.drawText(manager.getClient().textRenderer, this.description, 38, 18, this.descriptionColor, false);
+        drawContext.drawText(textRenderer, this.title, 38, 7, this.titleColor, false);
+        drawContext.drawText(textRenderer, this.description, 38, 18, this.descriptionColor, false);
 
         if (!hidden) {
             time += System.currentTimeMillis() - lastElapsed;
@@ -105,10 +109,14 @@ public class OmniToast implements Toast {
 
         if (time >= duration) {
             hidden = true;
-            return Visibility.HIDE;
         }
+    }
 
-        return Visibility.SHOW;
+    @Override
+    public void update(ToastManager manager, long currentTime) {
+        if (time >= duration) {
+            hidden = true;
+        }
     }
 
     @Override

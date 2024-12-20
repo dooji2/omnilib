@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -183,7 +184,7 @@ public class OmniPopup {
         if (omniText.getTextureIdentifier() != null) {
             Identifier iconId = omniText.getTextureIdentifier();
             int iconY = y + (fontHeight - iconHeight) / 2;
-            context.drawTexture(iconId, currentX, iconY, iconWidth, iconHeight, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
+            context.drawTexture(RenderLayer::getGuiTextured, iconId, currentX, iconY, iconWidth, iconHeight, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
             currentX += iconWidth + 5;
         }
 

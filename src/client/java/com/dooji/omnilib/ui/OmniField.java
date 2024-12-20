@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -259,7 +260,7 @@ public class OmniField extends ClickableWidget {
         Identifier currentBackground = isHovered() && hoveredTexture != null ? hoveredTexture : backgroundTexture;
     
         if (currentBackground != null) {
-            context.drawTexture(currentBackground, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
+            context.drawTexture(RenderLayer::getGuiTextured, currentBackground, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
         } else {
             int bgColor = isHovered() ? hoveredColor : backgroundColor;
             context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, bgColor);
@@ -307,7 +308,7 @@ public class OmniField extends ClickableWidget {
                 int cursorX = Math.min(textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, cursorPosition)), this.getX() + this.width - 4);
 
                 if (cursorTexture != null) {
-                    context.drawTexture(cursorTexture, cursorX, textY, 0, 0, 1, this.textRenderer.fontHeight, 1, this.textRenderer.fontHeight);
+                    context.drawTexture(RenderLayer::getGuiTextured, cursorTexture, cursorX, textY, 0, 0, 1, this.textRenderer.fontHeight, 1, this.textRenderer.fontHeight);
                 } else {
                     context.fill(cursorX, textY, cursorX + 1, textY + this.textRenderer.fontHeight, cursorColor);
                 }

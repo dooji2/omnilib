@@ -3,6 +3,7 @@ package com.dooji.omnilib.ui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -90,7 +91,7 @@ public class OmniButton extends ClickableWidget {
             int iconX = this.getX() + (this.width - iconSize) / 2;
             int iconY = this.getY() + (this.height - iconSize) / 2;
     
-            context.drawTexture(currentTexture, iconX, iconY, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            context.drawTexture(RenderLayer::getGuiTextured, currentTexture, iconX, iconY, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
     }    
 
