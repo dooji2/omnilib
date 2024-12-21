@@ -3,7 +3,7 @@
     <h1>Omnilib</h1>
     <p>
         A framework for enhanced UI elements and customization<br>
-        Built for Fabric 1.20.1, 1.20.4, 1.21 and 1.21.1
+        Built for Fabric 1.20.1, 1.20.4, 1.21, 1.21.1, 1.21.2 and 1.21.3
     </p>
     <p>
         <a href="https://discord.gg/UPmnyM9YcY">
