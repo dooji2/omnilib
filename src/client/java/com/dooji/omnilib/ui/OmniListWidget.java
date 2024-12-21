@@ -80,10 +80,6 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.hoveredEntry = this.isMouseOver(mouseX, mouseY) ? this.getEntryAtPosition(mouseX, mouseY) : null;
 
-        context.setShaderColor(0.125F, 0.125F, 0.125F, 1.0F);
-        context.drawTexture(Screen.OPTIONS_BACKGROUND_TEXTURE, this.left, top, this.width, this.height, 32, 32);
-        context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
         this.enableScissor(context);
 
         if (this.getEntryCount() > 0 && top >= 0) {
