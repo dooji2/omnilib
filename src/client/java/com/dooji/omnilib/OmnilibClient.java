@@ -2,10 +2,12 @@ package com.dooji.omnilib;
 
 import com.dooji.omnilib.text.OmniText;
 import com.dooji.omnilib.ui.*;
+
 import net.fabricmc.api.ClientModInitializer;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -69,7 +71,7 @@ public class OmnilibClient implements ClientModInitializer {
 	 * 
 	 * This version uses the default max height (140) and default scroll speed (25.0) when the content exceeds the max height.
 	 *
-	 * @param context           The draw context for rendering.
+	 * @param matrices          The MatrixStack for rendering.
 	 * @param textRenderer      The text renderer for drawing text.
 	 * @param categoryTitle     Title of the tooltip category.
 	 * @param itemStacks        List of ItemStacks to display. Can be null or empty.
@@ -82,7 +84,7 @@ public class OmnilibClient implements ClientModInitializer {
 	 * @param y                 Y-coordinate for the tooltip.
 	 */
 	public static void showTooltip(
-			DrawContext context,
+			MatrixStack matrices,
 			TextRenderer textRenderer,
 			String categoryTitle,
 			List<ItemStack> itemStacks,
@@ -109,13 +111,13 @@ public class OmnilibClient implements ClientModInitializer {
 				16
 		);
 
-		tooltip.render(context, textRenderer, x, y);
+		tooltip.render(matrices, textRenderer, x, y);
 	}
 
 	/**
 	 * Displays an OmniTooltip with fully customizable options.
 	 *
-	 * @param context           The draw context for rendering.
+	 * @param matrices          The MatrixStack for rendering.
 	 * @param textRenderer      The text renderer for drawing text.
 	 * @param categoryTitle     Title of the tooltip category.
 	 * @param itemStacks        List of ItemStacks to display. Can be null or empty.
@@ -130,7 +132,7 @@ public class OmnilibClient implements ClientModInitializer {
 	 * @param y                 Y-coordinate for the tooltip.
 	 */
 	public static void showTooltip(
-			DrawContext context,
+			MatrixStack matrices,
 			TextRenderer textRenderer,
 			String categoryTitle,
 			List<ItemStack> itemStacks,
@@ -161,7 +163,7 @@ public class OmnilibClient implements ClientModInitializer {
 				scrollSpeed
 		);
 
-		tooltip.render(context, textRenderer, x, y);
+		tooltip.render(matrices, textRenderer, x, y);
 	}
 
 	/**
