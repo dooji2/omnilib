@@ -2,12 +2,16 @@ package com.dooji.omnilib.ui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 
 public class OmniField extends ClickableWidget {
     private final TextRenderer textRenderer;
@@ -255,14 +259,15 @@ public class OmniField extends ClickableWidget {
     }
 
     @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         Identifier currentBackground = isHovered() && hoveredTexture != null ? hoveredTexture : backgroundTexture;
     
         if (currentBackground != null) {
-            context.drawTexture(currentBackground, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
+            RenderSystem.setShaderTexture(0, currentBackground);
+            DrawableHelper.drawTexture(matrices, this.getX(), this.getY(), 0, 0, this.width, this.height, this.width, this.height);
         } else {
             int bgColor = isHovered() ? hoveredColor : backgroundColor;
-            context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, bgColor);
+            DrawableHelper.fill(matrices, this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, bgColor);
         }
     
         String visibleText = this.textRenderer.trimToWidth(this.text.substring(scrollOffset), this.width - 8);
@@ -271,7 +276,7 @@ public class OmniField extends ClickableWidget {
     
         if (this.text.isEmpty() && !this.isFocused() && this.getMessage() != null) {
             Text placeholder = this.getMessage().copy().styled(style -> style.withItalic(true));
-            context.drawText(this.textRenderer, placeholder, textX, textY, 0x808080, false);
+            this.textRenderer.draw(matrices, placeholder, textX, textY, 0x808080);
         } else {
             if (selectionStart != -1 && selectionStart != cursorPosition) {
                 int start = Math.min(selectionStart, cursorPosition);
@@ -288,12 +293,12 @@ public class OmniField extends ClickableWidget {
                     selectionEndX = Math.min(selectionEndX, textX + this.width - 4);
     
                     if (selectionStartX < selectionEndX) {
-                        context.fill(selectionStartX, textY, selectionEndX, textY + this.textRenderer.fontHeight, 0x80FFFFFF);
+                        DrawableHelper.fill(matrices, selectionStartX, textY, selectionEndX, textY + this.textRenderer.fontHeight, 0x80FFFFFF);
                     }
                 }
             }
     
-            context.drawText(this.textRenderer, visibleText, textX, textY, 0xFFFFFF, false);
+            this.textRenderer.draw(matrices, visibleText, textX, textY, 0xFFFFFF);
         }
     
         if (this.isFocused()) {
@@ -307,9 +312,10 @@ public class OmniField extends ClickableWidget {
                 int cursorX = Math.min(textX + this.textRenderer.getWidth(this.text.substring(scrollOffset, cursorPosition)), this.getX() + this.width - 4);
 
                 if (cursorTexture != null) {
-                    context.drawTexture(cursorTexture, cursorX, textY, 0, 0, 1, this.textRenderer.fontHeight, 1, this.textRenderer.fontHeight);
+                    RenderSystem.setShaderTexture(0, cursorTexture);
+                    DrawableHelper.drawTexture(matrices, cursorX, textY, 0, 0, 1, this.textRenderer.fontHeight, 1, this.textRenderer.fontHeight);
                 } else {
-                    context.fill(cursorX, textY, cursorX + 1, textY + this.textRenderer.fontHeight, cursorColor);
+                    DrawableHelper.fill(matrices, cursorX, textY, cursorX + 1, textY + this.textRenderer.fontHeight, cursorColor);
                 }
             }
         }
@@ -327,7 +333,15 @@ public class OmniField extends ClickableWidget {
         this.lastBlinkTime = System.currentTimeMillis();
     }
 
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
     @Override
-    protected void appendClickableNarrations(net.minecraft.client.gui.screen.narration.NarrationMessageBuilder builder) {
+    public void appendNarrations(NarrationMessageBuilder builder) {
     }
 }
