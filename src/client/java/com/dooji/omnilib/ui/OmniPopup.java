@@ -2,15 +2,19 @@ package com.dooji.omnilib.ui;
 
 import com.dooji.omnilib.text.MarkdownParser;
 import com.dooji.omnilib.text.OmniText;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -99,19 +103,19 @@ public class OmniPopup {
         initializeScrollData();
     }
 
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY) {
+    public void render(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         if (suggestions.isEmpty()) return;
 
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 1);
+        matrices.push();
+        matrices.translate(0, 0, 1);
 
         offset = MathHelper.clamp(offset, 0, Math.max(0, suggestions.size() - maxVisibleSuggestions));
         int visibleCount = Math.min(suggestions.size(), maxVisibleSuggestions);
         int totalHeight = visibleCount * rowHeight;
         int startY = y - totalHeight;
         int backgroundColorWithOpacity = (backgroundOpacity << 24) | (color & 0x00FFFFFF);
-        context.fill(x, startY, x + popupWidth - scrollbarWidth, startY + totalHeight, backgroundColorWithOpacity);
-        context.enableScissor(x, startY, x + popupWidth - scrollbarWidth, startY + totalHeight);
+        DrawableHelper.fill(matrices, x, startY, x + popupWidth - scrollbarWidth, startY + totalHeight, backgroundColorWithOpacity);
+        DrawableHelper.enableScissor(x, startY, x + popupWidth - scrollbarWidth, startY + totalHeight);
         TextRenderer textRenderer = client.textRenderer;
 
         for (int i = 0; i < visibleCount; i++) {
@@ -121,22 +125,22 @@ public class OmniPopup {
 
             int textColor = (suggestionIndex == selectedIndex) ? selectedTextColor : normalTextColor;
             int rowBackgroundColor = (suggestionIndex == selectedIndex) ? 0x555555 : backgroundColorWithOpacity;
-            context.fill(x, suggestionY, x + popupWidth - scrollbarWidth, suggestionY + rowHeight, rowBackgroundColor);
+            DrawableHelper.fill(matrices, x, suggestionY, x + popupWidth - scrollbarWidth, suggestionY + rowHeight, rowBackgroundColor);
 
             int baseX = x + 5 - scrollOffsets.get(suggestionIndex).intValue();
 
             int centerY = suggestionY + (rowHeight / 2) - (textRenderer.fontHeight / 2);
 
             if (suggestion instanceof OmniText omniText) {
-                renderBulletAndText(context, textRenderer, omniText, baseX, centerY, textColor, suggestionIndex, textRenderer.fontHeight);
+                renderBulletAndText(matrices, textRenderer, omniText, baseX, centerY, textColor, suggestionIndex, textRenderer.fontHeight);
             } else if (suggestion instanceof String string) {
-                renderText(context, textRenderer, string, baseX, centerY, textColor);
+                renderText(matrices, textRenderer, string, baseX, centerY, textColor);
             } else if (suggestion instanceof Text txt) {
-                renderText(context, textRenderer, txt.getString(), baseX, centerY, textColor);
+                renderText(matrices, textRenderer, txt.getString(), baseX, centerY, textColor);
             }
         }
 
-        context.disableScissor();
+        DrawableHelper.disableScissor();
 
         if (suggestions.size() > maxVisibleSuggestions) {
             int scrollbarX = x + popupWidth - scrollbarWidth;
@@ -146,14 +150,14 @@ public class OmniPopup {
             int scrollbarY = startY + (int) ((1 - scrollPercent) * (totalHeight - scrollbarHeight));
             int scrollbarBackground = (scrollbarOpacity << 24) | 0x000000;
             int scrollbarForeground = (scrollbarOpacity << 24) | scrollbarColor;
-            context.fill(scrollbarX, startY, scrollbarX + scrollbarWidth, startY + totalHeight, scrollbarBackground);
-            context.fill(scrollbarX, scrollbarY, scrollbarX + scrollbarWidth, scrollbarY + scrollbarHeight, scrollbarForeground);
+            DrawableHelper.fill(matrices, scrollbarX, startY, scrollbarX + scrollbarWidth, startY + totalHeight, scrollbarBackground);
+            DrawableHelper.fill(matrices, scrollbarX, scrollbarY, scrollbarX + scrollbarWidth, scrollbarY + scrollbarHeight, scrollbarForeground);
         }
 
-        context.getMatrices().pop();
+        matrices.pop();
     }
 
-    private void renderBulletAndText(DrawContext context, TextRenderer textRenderer, OmniText omniText, int baseX, int y, int color, int index, int fontHeight) {
+    private void renderBulletAndText(MatrixStack matrices, TextRenderer textRenderer, OmniText omniText, int baseX, int y, int color, int index, int fontHeight) {
         String original = omniText.getOriginalText().getString();
         boolean dashed = original.startsWith("-");
 
@@ -182,19 +186,20 @@ public class OmniPopup {
 
         if (omniText.getTextureIdentifier() != null) {
             Identifier iconId = omniText.getTextureIdentifier();
+            RenderSystem.setShaderTexture(0, iconId);
             int iconY = y + (fontHeight - iconHeight) / 2;
-            context.drawTexture(iconId, currentX, iconY, iconWidth, iconHeight, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
+            DrawableHelper.drawTexture(matrices, currentX, iconY, iconWidth, iconHeight, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
             currentX += iconWidth + 5;
         }
 
         if (dashed) {
             int bulletSize = 5;
             int bulletY = y + (fontHeight - bulletSize) / 2;
-            context.fill(currentX, bulletY, currentX + bulletSize, bulletY + bulletSize, color);
+            DrawableHelper.fill(matrices, currentX, bulletY, currentX + bulletSize, bulletY + bulletSize, color);
             currentX += bulletSize + 10;
         }
 
-        context.drawText(textRenderer, processed.asOrderedText(), currentX, y, color, false);
+        textRenderer.draw(matrices, processed.asOrderedText(), currentX, y, color);
 
         if (lineWidth > visibleWidth) {
             if (!isPaused.get(index)) {
@@ -220,8 +225,8 @@ public class OmniPopup {
         }
     }
 
-    private void renderText(DrawContext context, TextRenderer textRenderer, String text, int x, int y, int color) {
-        context.drawText(textRenderer, Text.literal(text), x, y, color, false);
+    private void renderText(MatrixStack matrices, TextRenderer textRenderer, String text, int x, int y, int color) {
+        textRenderer.draw(matrices, Text.literal(text), x, y, color);
     }
 
     public void handleInput(int keyCode) {
