@@ -1,8 +1,12 @@
 package com.dooji.omnilib.ui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -69,36 +73,37 @@ public class OmniButton extends ClickableWidget {
     }
 
     @Override
-    protected void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         boolean hovered = this.isHovered();
 
         if (isImageButton) {
-            renderImageButton(context, hovered);
+            renderImageButton(matrices, hovered);
         } else {
-            renderTextButton(context, hovered);
+            renderTextButton(matrices, hovered);
         }
     }
 
-    private void renderImageButton(DrawContext context, boolean hovered) {
+    private void renderImageButton(MatrixStack matrices, boolean hovered) {
         Identifier currentTexture = hovered && hoverTexture != null ? hoverTexture : texture;
         int currentColor = hovered ? hoverColor : color;
     
-        context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, currentColor);
+        DrawableHelper.fill(matrices, this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, currentColor);
     
         if (currentTexture != null) {
             int iconSize = Math.min(this.width, this.height) / 2;
             int iconX = this.getX() + (this.width - iconSize) / 2;
             int iconY = this.getY() + (this.height - iconSize) / 2;
     
-            context.drawTexture(currentTexture, iconX, iconY, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            RenderSystem.setShaderTexture(0, currentTexture);
+            DrawableHelper.drawTexture(matrices, iconX, iconY, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
     }    
 
-    private void renderTextButton(DrawContext context, boolean hovered) {
+    private void renderTextButton(MatrixStack matrices, boolean hovered) {
         int currentColor = hovered ? hoverColor : color;
         int currentTextColor = hovered ? textHoverColor : textColor;
 
-        context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, currentColor);
+        DrawableHelper.fill(matrices, this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, currentColor);
 
         MinecraftClient client = MinecraftClient.getInstance();
         Text message = this.getMessage();
@@ -108,7 +113,7 @@ public class OmniButton extends ClickableWidget {
         int textX = this.getX() + (this.width - textWidth) / 2;
         int textY = this.getY() + (this.height - textHeight) / 2;
 
-        context.drawText(client.textRenderer, message, textX, textY, currentTextColor, false);
+        client.textRenderer.draw(matrices, message, textX, textY, currentTextColor);
     }
 
     public int getHeight() {
@@ -119,8 +124,24 @@ public class OmniButton extends ClickableWidget {
         this.height = height;
     }
 
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     @Override
-    protected void appendClickableNarrations(net.minecraft.client.gui.screen.narration.NarrationMessageBuilder builder) {
+    public void appendNarrations(NarrationMessageBuilder builder) {
         this.appendDefaultNarrations(builder);
     }
 }
