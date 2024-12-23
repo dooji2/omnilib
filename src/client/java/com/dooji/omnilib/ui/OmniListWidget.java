@@ -1,12 +1,12 @@
 package com.dooji.omnilib.ui;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
@@ -77,30 +77,32 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.hoveredEntry = this.isMouseOver(mouseX, mouseY) ? this.getEntryAtPosition(mouseX, mouseY) : null;
 
-        this.enableScissor(context);
+        DrawableHelper.enableScissor(this.left, this.top, this.right, this.bottom);
 
         if (this.getEntryCount() > 0 && top >= 0) {
             int headerX = this.getRowLeft();
             int headerY = top + 4 - (int) this.getScrollAmount();
-            this.renderHeader(context, headerX, headerY);
+
+            Tessellator tessellator = Tessellator.getInstance();
+            this.renderHeader(matrices, headerX, headerY, tessellator);
         }
 
-        this.renderList(context, mouseX, mouseY, delta);
+        this.renderList(matrices, mouseX, mouseY, delta);
 
-        context.disableScissor();
+        DrawableHelper.disableScissor();
 
-        context.fillGradient(RenderLayer.getGuiOverlay(), this.left, top, this.right, top + 4, -16777216, 0, 0);
-        context.fillGradient(RenderLayer.getGuiOverlay(), this.left, this.bottom - 4, this.right, this.bottom, 0, -16777216, 0);
+        DrawableHelper.fillGradient(matrices, this.left, top, this.right, top + 4, -16777216, 0, 0);
+        DrawableHelper.fillGradient(matrices, this.left, this.bottom - 4, this.right, this.bottom, 0, -16777216, 0);
 
         if (this.getMaxScroll() > 0) {
-            this.renderScrollbar(context, mouseX, mouseY);
+            this.renderScrollbar(matrices, mouseX, mouseY);
         }
     }
 
-    private void renderScrollbar(DrawContext context, int mouseX, int mouseY) {
+    private void renderScrollbar(MatrixStack matrices, int mouseX, int mouseY) {
         int scrollbarX = getScrollbarPositionX();
         int scrollbarY = this.top;
         int scrollbarHeight = this.height;
@@ -108,13 +110,13 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
         int handleY = (int) getScrollAmount() * (height - handleHeight) / getMaxScroll() + this.top;
         handleY = MathHelper.clamp(handleY, this.top, this.bottom - handleHeight);
 
-        context.fill(scrollbarX, scrollbarY, scrollbarX + 6, scrollbarY + scrollbarHeight, scrollbarBackgroundColor);
+        DrawableHelper.fill(matrices, scrollbarX, scrollbarY, scrollbarX + 6, scrollbarY + scrollbarHeight, scrollbarBackgroundColor);
 
         boolean isHovered = mouseX >= scrollbarX && mouseX < scrollbarX + 6
                 && mouseY >= handleY && mouseY < handleY + handleHeight;
         int handleColor = isHovered ? scrollbarHoverColor : scrollbarColor;
 
-        context.fill(scrollbarX, handleY, scrollbarX + 6, handleY + handleHeight, handleColor);
+        DrawableHelper.fill(matrices, scrollbarX, handleY, scrollbarX + 6, handleY + handleHeight, handleColor);
     }
 
     @Override
@@ -156,11 +158,11 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+        public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
             hovered = this.parent.getHoveredEntry() == this;
         
             int bgColor = hovered ? parent.hoverBackgroundColor : parent.backgroundColor;
-            context.fill(x, y, x + entryWidth, y + entryHeight, bgColor);            
+            DrawableHelper.fill(matrices, x, y, x + entryWidth, y + entryHeight, bgColor);            
         
             MinecraftClient client = MinecraftClient.getInstance();
             int margin = 10;
@@ -173,13 +175,13 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
         
             List<String> wrappedText = wrapText(client, text, textAreaWidth, contentHeight, !buttons.isEmpty(), margin);
             for (String line : wrappedText) {
-                context.drawText(client.textRenderer, line, textStartX, textStartY, 0xFFFFFF, false);
+                client.textRenderer.draw(matrices, line, textStartX, textStartY, 0xFFFFFF);
                 textStartY += client.textRenderer.fontHeight;
             }
         
             if (!footer.isEmpty()) {
                 int footerY = y + this.entryHeight - client.textRenderer.fontHeight - margin;
-                context.drawText(client.textRenderer, "§o" + footer, textStartX, footerY, 0xAAAAAA, false);
+                client.textRenderer.draw(matrices, "§o" + footer, textStartX, footerY, 0xAAAAAA);
             }            
         
             int buttonX = x + entryWidth - buttonWidth;
@@ -190,7 +192,7 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
                 button.setY(y);
                 button.setWidth(buttonWidth);
                 button.setHeight(entryHeight);
-                button.render(context, mouseX, mouseY, delta);
+                button.render(matrices, mouseX, mouseY, delta);
             } else if (!buttons.isEmpty()) {
                 int buttonHeight = entryHeight / buttons.size();
             
@@ -201,7 +203,7 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
                     button.setY(buttonY);
                     button.setWidth(buttonWidth);
                     button.setHeight(buttonHeight);
-                    button.render(context, mouseX, mouseY, delta);
+                    button.render(matrices, mouseX, mouseY, delta);
                 }
             }            
         }        
