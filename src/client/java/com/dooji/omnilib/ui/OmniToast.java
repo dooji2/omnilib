@@ -1,9 +1,12 @@
 package com.dooji.omnilib.ui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.DrawContext;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -73,21 +76,20 @@ public class OmniToast implements Toast {
     }
 
     @Override
-    public Visibility draw(DrawContext drawContext, ToastManager manager, long currentTime) {
+    public Visibility draw(MatrixStack matrices, ToastManager manager, long currentTime) {
         updateWidth();
 
         RenderSystem.setShaderTexture(0, backgroundTexture);
-        drawContext.drawTexture(backgroundTexture, 0, 0, 0, 0, getWidth(), getHeight(), textureWidth, textureHeight);
+        DrawableHelper.drawTexture(matrices, 0, 0, 0, 0, getWidth(), getHeight(), textureWidth, textureHeight);
 
         if (iconItemStack != null) {
-            drawContext.drawItem(iconItemStack, 10, (textureHeight - iconSize) / 2);
+            drawItem(iconItemStack, 10, (textureHeight - iconSize) / 2);
         } else {
             RenderSystem.setShaderTexture(0, iconTexture);
-            drawContext.drawTexture(iconTexture, 10, (textureHeight - iconSize) / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
+            DrawableHelper.drawTexture(matrices, 10, (textureHeight - iconSize) / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
         }
 
-        drawContext.drawText(manager.getClient().textRenderer, this.title, 38, 7, this.titleColor, false);
-        drawContext.drawText(manager.getClient().textRenderer, this.description, 38, 18, this.descriptionColor, false);
+        manager.getClient().textRenderer.draw(matrices, this.title, 38, 7, this.titleColor);
 
         if (!hidden) {
             time += System.currentTimeMillis() - lastElapsed;
@@ -137,5 +139,10 @@ public class OmniToast implements Toast {
             }
         }
         return count;
+    }
+
+    private void drawItem(ItemStack itemStack, int x, int y) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        client.getItemRenderer().renderInGui(itemStack, x, y);
     }
 }
