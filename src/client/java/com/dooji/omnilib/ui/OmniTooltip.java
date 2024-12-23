@@ -1,7 +1,9 @@
 package com.dooji.omnilib.ui;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -10,6 +12,8 @@ import net.minecraft.util.math.ColorHelper.Argb;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 
 public class OmniTooltip {
     private final String categoryTitle;
@@ -86,20 +90,21 @@ public class OmniTooltip {
         this(categoryTitle, itemStacks, textList, iconSize, padding, lineSpacing, backgroundColor, backgroundTexture, textColor, customIconTexture, customIconWidth, customIconHeight, null, null);
     }
 
-    public void render(DrawContext context, TextRenderer textRenderer, int x, int y) {
+    public void render(MatrixStack matrices, TextRenderer textRenderer, int x, int y) {
         int tooltipWidth = getTooltipWidth(textRenderer);
         int tooltipHeight = getTooltipHeight();
         boolean requiresScrolling = tooltipHeight > maxHeight;
 
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 1);
+        matrices.push();
+        matrices.translate(0, 0, 1);
 
         int displayHeight = requiresScrolling ? maxHeight : tooltipHeight;
-        drawBackground(context, x, y, tooltipWidth, displayHeight);
+        drawBackground(matrices, x, y, tooltipWidth, displayHeight);
 
         int yOffset = padding;
 
-        context.drawTextWithShadow(
+        DrawableHelper.drawTextWithShadow(
+                matrices,
                 textRenderer,
                 Text.literal(categoryTitle).styled(style -> style.withBold(true)),
                 x + padding,
@@ -109,15 +114,15 @@ public class OmniTooltip {
         yOffset += iconSize + lineSpacing;
 
         if (requiresScrolling) {
-            renderScrollableContent(context, textRenderer, x, y + yOffset, tooltipWidth, displayHeight - yOffset);
+            renderScrollableContent(matrices, textRenderer, x, y + yOffset, tooltipWidth, displayHeight - yOffset);
         } else {
-            renderContent(context, textRenderer, x, y + yOffset);
+            renderContent(matrices, textRenderer, x, y + yOffset);
         }
 
-        context.getMatrices().pop();
+        matrices.pop();
     }
 
-    private void renderScrollableContent(DrawContext context, TextRenderer textRenderer, int x, int y, int width, int height) {
+    private void renderScrollableContent(MatrixStack matrices, TextRenderer textRenderer, int x, int y, int width, int height) {
         int contentHeight = getTooltipHeight() - padding;
         if (contentHeight <= 0) return;
     
@@ -126,38 +131,39 @@ public class OmniTooltip {
     
         int yOffset = -((int) scrollAmount);
     
-        context.enableScissor(x, y, x + width, y + height - padding);
+        DrawableHelper.enableScissor(x, y, x + width, y + height - padding);
     
-        renderContent(context, textRenderer, x, y + yOffset);
+        renderContent(matrices, textRenderer, x, y + yOffset);
     
         int dividerY = y + yOffset + contentHeight + (DEFAULT_LINE_SPACING / 2);
-        renderDivider(context, x, dividerY, width);
+        renderDivider(matrices, x, dividerY, width);
     
-        renderContent(context, textRenderer, x, y + yOffset + contentHeight + DEFAULT_LINE_SPACING);
+        renderContent(matrices, textRenderer, x, y + yOffset + contentHeight + DEFAULT_LINE_SPACING);
     
-        context.disableScissor();
+        DrawableHelper.disableScissor();
     }    
     
-    private void renderDivider(DrawContext context, int x, int y, int width) {
+    private void renderDivider(MatrixStack matrices, int x, int y, int width) {
         int lineWidth = (int) (width * 0.75);
         int lineStartX = x + (width - lineWidth) / 2;
         int adjustedY = y - (iconSize + lineSpacing * 4) / 2;
     
-        context.fill(lineStartX, adjustedY, lineStartX + lineWidth, adjustedY + 1, 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, lineStartX, adjustedY, lineStartX + lineWidth, adjustedY + 1, 0xFFFFFFFF);
     }      
 
-    private void renderContent(DrawContext context, TextRenderer textRenderer, int x, int y) {
+    private void renderContent(MatrixStack matrices, TextRenderer textRenderer, int x, int y) {
         int yOffset = 0;
 
         for (int i = 0; i < textList.size(); i++) {
             if (customIconTexture != null) {
-                drawCustomIcon(context, x + padding, y + yOffset);
+                drawCustomIcon(matrices, x + padding, y + yOffset);
             } else if (i < itemStacks.size()) {
                 ItemStack itemStack = itemStacks.get(i);
-                context.drawItem(itemStack, x + padding, y + yOffset);
+                drawItem(itemStack, x + padding, y + yOffset);
             }
 
-            context.drawTextWithShadow(
+            DrawableHelper.drawTextWithShadow(
+                    matrices,
                     textRenderer,
                     textList.get(i),
                     x + iconSize + padding * 2,
@@ -184,17 +190,19 @@ public class OmniTooltip {
         return (textList.size() + 1) * (iconSize + lineSpacing) - lineSpacing + padding * 2;
     }
 
-    private void drawBackground(DrawContext context, int x, int y, int width, int height) {
+    private void drawBackground(MatrixStack matrices, int x, int y, int width, int height) {
         if (backgroundTexture != null) {
-            context.drawTexture(backgroundTexture, x - padding, y - padding, 0, 0, width + padding * 2, height + padding * 2);
+            RenderSystem.setShaderTexture(0, backgroundTexture);
+            DrawableHelper.drawTexture(matrices, x - padding, y - padding, 0, 0, width + padding * 2, height + padding * 2, width + padding * 2, height + padding * 2);
         } else {
-            context.fill(x - padding, y - padding, x + width + padding, y + height + padding, backgroundColor);
+            DrawableHelper.fill(matrices, x - padding, y - padding, x + width + padding, y + height + padding, backgroundColor);
         }
     }
 
-    private void drawCustomIcon(DrawContext context, int x, int y) {
-        context.drawTexture(
-                customIconTexture,
+    private void drawCustomIcon(MatrixStack matrices, int x, int y) {
+        RenderSystem.setShaderTexture(0, customIconTexture);
+        DrawableHelper.drawTexture(
+                matrices,
                 x,
                 y,
                 0,
@@ -204,5 +212,10 @@ public class OmniTooltip {
                 customIconWidth,
                 customIconHeight
         );
+    }
+
+    private void drawItem(ItemStack itemStack, int x, int y) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        client.getItemRenderer().renderInGui(itemStack, x, y);
     }
 }
