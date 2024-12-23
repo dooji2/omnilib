@@ -3,7 +3,7 @@
 	"package": "com.dooji.omnilib.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"DrawContextMixin"
+		"TextRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
