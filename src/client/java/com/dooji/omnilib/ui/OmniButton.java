@@ -111,7 +111,7 @@ public class OmniButton extends ClickableWidget {
         int textHeight = client.textRenderer.fontHeight;
 
         int textX = this.getX() + (this.width - textWidth) / 2;
-        int textY = this.getY() + (this.height - textHeight) / 2;
+        int textY = this.getY() + (this.height - textHeight) / 2 + 1;
 
         client.textRenderer.draw(matrices, message, textX, textY, currentTextColor);
     }
