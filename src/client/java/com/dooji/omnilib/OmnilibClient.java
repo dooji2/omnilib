@@ -66,7 +66,7 @@ public class OmnilibClient implements ClientModInitializer {
 
 	/**
 	 * Displays an OmniTooltip with fully customizable options.
-	 * 
+	 *
 	 * This version uses the default max height (140) and default scroll speed (25.0) when the content exceeds the max height.
 	 *
 	 * @param context           The draw context for rendering.
@@ -420,5 +420,76 @@ public class OmnilibClient implements ClientModInitializer {
 				scrollbarHoverColor,
 				clickCallback
 		);
+	}
+
+	/**
+	 * Creates an OmniFieldListWidget.
+	 *
+	 * @param client                  The Minecraft client instance.
+	 * @param listWidth               Width of the list widget.
+	 * @param listHeight              Height of the list widget.
+	 * @param top                     Top position of the list.
+	 * @param bottom                  Bottom position of the list.
+	 * @param itemWidth               Width of each entry.
+	 * @param itemHeight              Height of each entry.
+	 * @param fieldWidth              The width of the OmniFields displayed in each list entry.
+	 * @param fieldSpacing            Spacing from the right for OmniField.
+	 * @param spacing                 Spacing between entries.
+	 * @param backgroundTexture       Background texture for entries.
+	 * @param hoverBackgroundTexture  Hover texture for entries.
+	 * @param backgroundColor         Background color for entries.
+	 * @param hoverBackgroundColor    Hover color for entries.
+	 * @param scrollbarBackgroundColor Color for scrollbar background.
+	 * @param scrollbarColor          Color for scrollbar handle.
+	 * @param scrollbarHoverColor     Hover color for scrollbar handle.
+	 * @param itemStacks              List of ItemStacks to display for each entry.
+	 * @param content                 List of String content for each entry.
+	 * @param fields                  List of OmniFields to display for each entry.
+	 * @return An OmniFieldListWidget instance.
+	 */
+	public static OmniFieldListWidget createOmniFieldListWidget(
+			MinecraftClient client,
+			int listWidth,
+			int listHeight,
+			int top,
+			int bottom,
+			int itemWidth,
+			int itemHeight,
+			int fieldWidth,
+			int fieldSpacing,
+			int spacing,
+			Identifier backgroundTexture,
+			Identifier hoverBackgroundTexture,
+			int backgroundColor,
+			int hoverBackgroundColor,
+			int scrollbarBackgroundColor,
+			int scrollbarColor,
+			int scrollbarHoverColor,
+			List<ItemStack> itemStacks,
+			List<String> content,
+			List<OmniField> fields
+	) {
+		OmniFieldListWidget widget = new OmniFieldListWidget(
+				client,
+				listWidth,
+				listHeight,
+				top,
+				bottom,
+				itemWidth,
+				itemHeight,
+				fieldWidth,
+				fieldSpacing,
+				spacing,
+				backgroundTexture,
+				hoverBackgroundTexture,
+				backgroundColor,
+				hoverBackgroundColor,
+				scrollbarBackgroundColor,
+				scrollbarColor,
+				scrollbarHoverColor
+		);
+
+		widget.setItemsWithFields(itemStacks, content, fields);
+		return widget;
 	}
 }
