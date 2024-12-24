@@ -26,8 +26,9 @@ public class OmniField extends ClickableWidget {
     private boolean cursorVisible;
 
     private final int cursorColor;
-    private final int backgroundColor;
-    private final int hoveredColor;
+    private int backgroundColor;
+    private int hoveredColor;
+    private int textColor = 0xFFFFFF;
     private final Identifier cursorTexture;
     private final Identifier backgroundTexture;
     private final Identifier hoveredTexture;
@@ -78,6 +79,14 @@ public class OmniField extends ClickableWidget {
 
     public void setMaxLength(int maxLength) {
         this.maxLength = maxLength;
+    }
+
+    public void setColor(int backgroundColor, int hoveredColor) {
+        this.backgroundColor = backgroundColor;
+        this.hoveredColor = hoveredColor;
+    }
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
     }
 
     @Override
@@ -339,6 +348,14 @@ public class OmniField extends ClickableWidget {
 
     public int getY() {
         return this.y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     @Override
