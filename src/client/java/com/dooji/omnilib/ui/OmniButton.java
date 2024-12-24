@@ -2,6 +2,7 @@ package com.dooji.omnilib.ui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
@@ -107,13 +108,13 @@ public class OmniButton extends ClickableWidget {
         int textHeight = client.textRenderer.fontHeight;
 
         int textX = this.getX() + (this.width - textWidth) / 2;
-        int textY = this.getY() + (this.height - textHeight) / 2;
+        int textY = this.getY() + (this.height - textHeight) / 2 + 1;
 
         context.drawText(client.textRenderer, message, textX, textY, currentTextColor, false);
     }
 
     @Override
-    protected void appendClickableNarrations(net.minecraft.client.gui.screen.narration.NarrationMessageBuilder builder) {
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
         this.appendDefaultNarrations(builder);
     }
 }
