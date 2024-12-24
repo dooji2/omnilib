@@ -3,6 +3,7 @@ package com.dooji.omnilib.ui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
@@ -23,8 +24,9 @@ public class OmniField extends ClickableWidget {
     private boolean cursorVisible;
 
     private final int cursorColor;
-    private final int backgroundColor;
-    private final int hoveredColor;
+    private int backgroundColor;
+    private int hoveredColor;
+    private int textColor = 0xFFFFFF;
     private final Identifier cursorTexture;
     private final Identifier backgroundTexture;
     private final Identifier hoveredTexture;
@@ -75,6 +77,15 @@ public class OmniField extends ClickableWidget {
 
     public void setMaxLength(int maxLength) {
         this.maxLength = maxLength;
+    }
+
+    public void setColor(int backgroundColor, int hoveredColor) {
+        this.backgroundColor = backgroundColor;
+        this.hoveredColor = hoveredColor;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
     }
 
     @Override
@@ -329,6 +340,6 @@ public class OmniField extends ClickableWidget {
     }
 
     @Override
-    protected void appendClickableNarrations(net.minecraft.client.gui.screen.narration.NarrationMessageBuilder builder) {
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
     }
 }
