@@ -90,6 +90,7 @@ public class OmniToast implements Toast {
         }
 
         manager.getClient().textRenderer.draw(matrices, this.title, 38, 7, this.titleColor);
+        manager.getClient().textRenderer.draw(matrices, this.description, 38, 19, this.descriptionColor);
 
         if (!hidden) {
             time += System.currentTimeMillis() - lastElapsed;
