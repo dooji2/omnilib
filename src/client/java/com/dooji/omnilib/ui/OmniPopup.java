@@ -322,13 +322,14 @@ public class OmniPopup {
                         String url = linkMatcher.group(2);
         
                         if (segment.trim().equals(displayText)) {
-                            Style linkStyle = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+                            // TODO - make links work again
+                            // Style linkStyle = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
         
-                            if (client.currentScreen instanceof Screen screen) {
-                                if (screen.handleTextClick(linkStyle)) {
-                                    return true;
-                                }
-                            }
+                            // if (client.currentScreen instanceof Screen screen) {
+                            //     if (screen.handleTextClick(linkStyle)) {
+                            //         return true;
+                            //     }
+                            // }
                         }
                     }
                 }
