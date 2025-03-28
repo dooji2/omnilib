@@ -82,7 +82,7 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
 
         if (this.getEntryCount() > 0 && this.getY() >= 0) {
             int headerX = this.getRowLeft();
-            int headerY = this.getY() + 4 - (int) this.getScrollAmount();
+            int headerY = this.getY() + 4 - (int) this.getScrollY();
             this.renderHeader(context, headerX, headerY);
         }
 
@@ -94,12 +94,12 @@ public class OmniListWidget extends ElementListWidget<OmniListWidget.OmniEntry> 
     }
 
     private void renderScrollbar(DrawContext context, int mouseX, int mouseY) {
-        if (isScrollbarVisible()) {
+        if (overflows()) {
             int scrollbarX = getScrollbarX();
             int scrollbarY = getY();
             int scrollbarHeight = getHeight();
-            int handleHeight = MathHelper.clamp((int) ((float) height * height / getMaxPosition()), 32, height - 8);
-            int handleY = (int) getScrollAmount() * (height - handleHeight) / getMaxScroll() + getY();
+            int handleHeight = MathHelper.clamp((int) ((float) height * height / getContentsHeightWithPadding()), 32, height - 8);
+            int handleY = (int) getScrollY() * (height - handleHeight) / getMaxScrollY() + getY();
             handleY = MathHelper.clamp(handleY, getY(), getBottom() - handleHeight);
 
             context.fill(scrollbarX, scrollbarY, scrollbarX + 6, scrollbarY + scrollbarHeight, scrollbarBackgroundColor);
